@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/index.css"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Course Portal</title>
+    <!--         https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';"/>
+
+</head>
+<body>
+<div id="wrapper">
+    <div class="border-right" id="sidebar-wrapper">
+        <div class="sidebar-heading">Courses</div>
+        <div class="list-group list-group-flush" id="sidebar-list">
+            <!-- dynamically added -->
+        </div>
+    </div>
+
+    <div id="page-content-wrapper">
+        <div id="topbar">
+            <div id="topbar-left">
+                <h1 id="course-name"></h1>
+                <h1 id="separator">&#65372;</h1>
+                <h1 id="course-number"></h1>
+            </div>
+            <div id="topbar-right">
+                <a class="topbar-clickable topbar-item" id="meeting-button" href="#" data-link="about:blank">Join
+                    meeting</a>
+                <a href="#" class="topbar-clickable topbar-item" id="settings"><i class="material-icons"
+                                                                                  style="font-size: 36px">settings</i></a>
+            </div>
+        </div>
+        <br>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-4 col-md-12">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="card-title-bar">
+                                <h4 class="card-title" style="flex-grow: 1; margin: 0">Notes</h4>
+                                <i class="material-icons new-icon" id="new-note" style="font-size: 36px">add</i>
+                            </div>
+                            <hr>
+                            <div id="notes-list">
+                                <!-- dynamically added -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="card-title-bar">
+                                <h4 class="card-title" style="flex-grow: 1; margin: 0">To-do</h4>
+                                <i class="material-icons new-icon" id="new-todo" style="font-size: 36px">add</i>
+                            </div>
+                            <hr>
+                            <div id="parent-todo-container">
+                                <div id="new-todo-container" style="display: none">
+                                    <div class="todo-item" id="input-todo-item">
+                                        <input type="checkbox" disabled class="todo-checkbox">
+                                        <div class="todo-text-container">
+                                            <input id="todo-input-name" type="text" placeholder="New to-do...">
+                                            <br>
+                                            <input id="todo-input-date" type="text" placeholder="Add due date (optional)">
+                                        </div>
+                                        <a href="#" id="todo-add">Add</a>
+                                        <button type="button" class="close" id="new-todo-close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <hr class="todo-divider">
+                                </div>
+
+                                <div id="todo-list">
+                                    <!-- dynamically added -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="card-title-bar">
+                                <h4 class="card-title" style="flex-grow: 1; margin: 0">Tests</h4>
+                                <i class="material-icons new-icon" id="new-test" style="font-size: 36px">add</i>
+                            </div>
+                            <hr>
+                            <div id="parent-test-container">
+                                <div id="new-test-container" style="display: none">
+                                    <div class="todo-item" id="input-test-item">
+                                        <div class="todo-text-container">
+                                            <input id="test-input-name" type="text" placeholder="Test name...">
+                                            <br>
+                                            <input id="test-input-date" type="date" placeholder="Date">
+                                        </div>
+                                        <a href="#" id="test-add">Add</a>
+                                        <button type="button" class="close" id="new-test-close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <hr class="todo-divider">
+                                </div>
+
+                                <div id="test-list">
+                                    <!-- dynamically added -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="course-settings" tabindex="-1" role="dialog" aria-labelledby="course-settings-label"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title" id="course-settings-label">Course Settings</h1>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid" style="padding: 0">
+                        <div class="row">
+                            <div class="col-6">
+                                <label>
+                                    Course Name
+                                    <input type="text" placeholder="Intro to Economics" class="question-input"
+                                           id="course-settings-course-name">
+                                </label>
+                                <label>
+                                    Course Number
+                                    <input type="text" placeholder="ECON 101" class="question-input"
+                                           id="course-settings-course-number">
+                                </label>
+                                <hr class="question-separator">
+                                <label>
+                                    Meeting Link
+                                    <input type="url" placeholder="https://zoom.us/..." class="question-input"
+                                           id="course-settings-meeting-link">
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <button type="button" class="btn btn-secondary" id="select-notes-dir-button">Select
+                                    Notes Directory
+                                </button>
+                                <p id="course-settings-notes-path-label" style="margin-top: 10px">No directory
+                                    chosen</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: center; margin-top: 30px">
+                            <button type="button" class="btn btn-danger" id="course-settings-delete-button">Delete
+                                Course
+                            </button>
+                        </div>
+                        <div id="confirm-delete-buttons"
+                             style="display: none; justify-content: center; margin-top: 30px">
+                            <div>
+                                <p>Are you sure you want to delete this course? This action cannot be undone.</p>
+                                <div style="display: flex; justify-content: center;">
+                                    <button type="button" class="btn btn-secondary"
+                                            id="course-settings-do-not-delete-button">No, take me back!
+                                    </button>
+                                    <p>&ensp;</p>
+                                    <button type="button" class="btn btn-danger"
+                                            id="course-settings-confirm-delete-button">Confirm Delete Course
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <p class="text-danger" id="course-settings-error"></p>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="course-settings-save-button">
+                        Save changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="new-note-modal" tabindex="-1" role="dialog" aria-labelledby="new-note-modal-label"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title">Add Note</h1>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label>
+                        Name of Note (without extension)
+                        <input type="text" placeholder="Week 1 Lecture 1" class="question-input"
+                               id="new-note-name">
+                    </label>
+                    <h5>Select a template to create a note</h5>
+                    <div>
+                        <div id="note-template-list">
+                            <!-- dynamically added -->
+                        </div>
+                        <a href="#" id="create-new-template-link">
+                            <div style="flex-grow: 1" class="text-muted">Create new template...</div>
+                            <i class="material-icons" style="font-size: 36px; margin: 0; padding: 0;">add</i>
+                        </a>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <p class="text-danger" id="new-note-error"></p>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="new-course-modal" tabindex="-1" role="dialog" aria-labelledby="new-course-label"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title" id="new-course-label">New Course</h1>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid" style="padding: 0">
+                        <div class="row">
+                            <div class="col-6">
+                                <label>
+                                    Course Name
+                                    <input type="text" placeholder="Intro to Economics" class="question-input"
+                                           id="new-course-course-name">
+                                </label>
+                                <label>
+                                    Course Number
+                                    <input type="text" placeholder="ECON 101" class="question-input"
+                                           id="new-course-course-number">
+                                </label>
+                                <hr class="question-separator">
+                                <label>
+                                    Meeting Link
+                                    <input type="url" placeholder="https://zoom.us/..." class="question-input"
+                                           id="new-course-meeting-link">
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <button type="button" class="btn btn-secondary" id="new-course-select-notes-dir-button">
+                                    Select
+                                    Notes Directory
+                                </button>
+                                <p id="new-course-notes-path-label" style="margin-top: 10px">No directory
+                                    chosen</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <p class="text-danger" id="new-course-error"></p>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="new-course-save-button">
+                        Save changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="new-template-modal" tabindex="-1" role="dialog" aria-labelledby="new-template-label"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title" id="new-template-label">New Note Template</h1>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Only .md and .txt templates are supported.</p>
+                    <br>
+                    <label>
+                        Name of Template (with extension)
+                        <input type="text" placeholder="Example Template.md" class="question-input"
+                               id="new-template-name">
+                    </label>
+                </div>
+                <div class="modal-footer">
+                    <p class="text-danger" id="new-template-error"></p>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="new-template-create-button">
+                        Create Template
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    window.$ = window.jQuery = require('./scripts/jquery-3.5.1.min');
+    require('./portal.js')
+</script>
+
+<script type="text/javascript" src="scripts/popper.min.js"></script>
+<script type="text/javascript" src="scripts/bootstrap.min.js"></script>
+
+<!--<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>-->
+
+<!--<script src="scripts/jquery-3.5.1.min.js"></script>-->
+<!--<script type="text/javascript" src="./portal.js"></script>-->
+
+<!--<script>if (window.module) module = window.module;</script>-->
+</body>
+</html>
+
