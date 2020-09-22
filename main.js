@@ -10,18 +10,36 @@ function saveWindowBounds(win) {
 }
 
 function createTouchBar() {
-    const meetingButton = new TouchBarButton({
-        label: 'Join Meeting',
-        backgroundColor: '#327af2',
-        click: () => {
-            var meetingUrl = store.get('courses.' + store.get('lastSelectedCourse') + '.meeting_link')
-            shell.openExternal(meetingUrl)
-        }
-    });
+    const meetingLink = store.get('courses.' + store.get('lastSelectedCourse') + '.meeting_link');
+    const discMeetingLink = store.get('courses.' + store.get('lastSelectedCourse') + '.disc_meeting_link');
+
+    let buttons = []
+
+    if (meetingLink !== "") {
+        const meetingButton = new TouchBarButton({
+            label: 'Join Lecture',
+            backgroundColor: '#327af2',
+            click: () => {
+                shell.openExternal(meetingLink)
+            }
+        });
+        buttons.push(meetingButton);
+    }
+
+    if (discMeetingLink !== "") {
+        const discMeetingButton = new TouchBarButton({
+            label: 'Join Discussion',
+            backgroundColor: '#327af2',
+            click: () => {
+                shell.openExternal(discMeetingLink)
+            }
+        });
+        buttons.push(discMeetingButton);
+    }
+
+
     const touchBar = new TouchBar({
-        items: [
-            meetingButton
-        ]
+        items: buttons
     });
     return touchBar;
 }
@@ -92,6 +110,14 @@ function createWindow() {
 
     ipcMain.handle('get-app-data-path', async (event) => {
         return app.getPath('userData');
+    });
+
+    ipcMain.handle('update-touch-bar', async (event) => {
+        win.setTouchBar(createTouchBar());
+    });
+
+    ipcMain.handle('clear-touch-bar', async (event) => {
+        win.setTouchBar();
     });
 
     // ipcMain.on('set-pref', (event, path, val) => {

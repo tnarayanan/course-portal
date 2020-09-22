@@ -27,8 +27,10 @@
                 <h1 id="course-number"></h1>
             </div>
             <div id="topbar-right">
-                <a class="topbar-clickable topbar-item" id="meeting-button" href="#" data-link="about:blank">Join
-                    meeting</a>
+                <a class="topbar-clickable topbar-item meeting-button" id="meeting-button" href="#" data-link="about:blank">Join
+                    Lecture</a>
+                <a class="topbar-clickable topbar-item meeting-button" id="disc-meeting-button" href="#" data-link="about:blank">Join
+                    Discussion</a>
                 <a href="#" class="topbar-clickable topbar-item" id="settings"><i class="material-icons"
                                                                                   style="font-size: 36px">settings</i></a>
             </div>
@@ -143,9 +145,14 @@
                                 </label>
                                 <hr class="question-separator">
                                 <label>
-                                    Meeting Link
+                                    Lecture Meeting Link (optional)
                                     <input type="url" placeholder="https://zoom.us/..." class="question-input"
                                            id="course-settings-meeting-link">
+                                </label>
+                                <label>
+                                    Discussion Meeting Link (optional)
+                                    <input type="url" placeholder="https://zoom.us/..." class="question-input"
+                                           id="course-settings-disc-meeting-link">
                                 </label>
                             </div>
                             <div class="col-6">
@@ -252,9 +259,14 @@
                                 </label>
                                 <hr class="question-separator">
                                 <label>
-                                    Meeting Link
+                                    Lecture Meeting Link (optional)
                                     <input type="url" placeholder="https://zoom.us/..." class="question-input"
                                            id="new-course-meeting-link">
+                                </label>
+                                <label>
+                                    Discussion Meeting Link (optional)
+                                    <input type="url" placeholder="https://zoom.us/..." class="question-input"
+                                           id="new-course-disc-meeting-link">
                                 </label>
                             </div>
                             <div class="col-6">

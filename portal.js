@@ -13,8 +13,13 @@ function switchCourse(courseNumber) {
     if (courseNumber === undefined) {
         $('#course-name').text("");
         $('#course-number').text("Select a course...");
-        $('#meeting-button').attr('data-link', "about:blank");
+        $('#meeting-button').attr('data-link', "about:blank").css('display', 'none');
+        $('#disc-meeting-button').attr('data-link', "about:blank").css('display', 'none');
+
         dataStore.delete('lastSelectedCourse');
+
+        ipcRenderer.invoke('clear-touch-bar');
+
         updateNotesList();
         updateTodoList();
         updateTestList();
@@ -32,11 +37,25 @@ function switchCourse(courseNumber) {
         console.log("received course: " + course);
         $('#course-name').text(course.name);
         $('#course-number').text(courseNumber);
-        $('#meeting-button').attr('data-link', course.meeting_link);
+
+        if (course.meeting_link === "") {
+            $('#meeting-button').attr('data-link', "about:blank").css('display', 'none');
+        } else {
+            $('#meeting-button').attr('data-link', course.meeting_link).css('display', 'block');
+        }
+
+        if (course.disc_meeting_link === "") {
+            $('#disc-meeting-button').attr('data-link', "about:blank").css('display', 'none');
+        } else {
+            $('#disc-meeting-button').attr('data-link', course.disc_meeting_link).css('display', 'block');
+        }
+
+        ipcRenderer.invoke('update-touch-bar');
+
         updateNotesList();
         updateTodoList();
         updateTestList();
-    })
+    });
 }
 
 function updateTodoList() {
@@ -371,6 +390,7 @@ $(document).ready(function () {
         $('#new-course-course-name').val("");
         $('#new-course-course-number').val("");
         $('#new-course-meeting-link').val("");
+        $('#new-course-disc-meeting-link').val("");
         $('#new-course-notes-path-label').text("");
 
         $('#new-course-error').text("");
@@ -380,14 +400,16 @@ $(document).ready(function () {
         var name = $('#new-course-course-name').val();
         var number = $('#new-course-course-number').val();
         var meetingLink = $('#new-course-meeting-link').val();
+        var discMeetingLink = $('#new-course-disc-meeting-link').val();
         var notesFolder = $('#new-course-notes-path-label').text();
 
-        if (name !== "" && number !== "" && meetingLink !== "" && notesFolder !== "") {
+        if (name !== "" && number !== "" && notesFolder !== "") {
             dataStore.has('courses.' + number, (has) => {
                 if (!has) {
                     var newCourseData = {
                         name: name,
                         meeting_link: meetingLink,
+                        disc_meeting_link: discMeetingLink,
                         notes_folder: notesFolder
                     };
 
@@ -424,6 +446,16 @@ $(document).ready(function () {
         shell.openExternal(link)
     });
 
+    $('#disc-meeting-button').bind('click', function (event) {
+        console.log("dicussion meeting button clicked");
+        if (currentCourse === undefined) {
+            return;
+        }
+        event.preventDefault();
+        var link = this.getAttribute('data-link');
+        shell.openExternal(link)
+    });
+
     $('#settings').bind('click', function (event) {
         console.log("settings clicked");
         if (currentCourse === undefined) {
@@ -439,6 +471,7 @@ $(document).ready(function () {
         $('#course-settings-course-name').val(currentCourse.name);
         $('#course-settings-course-number').val(currentCourseNumber);
         $('#course-settings-meeting-link').val(currentCourse.meeting_link);
+        $('#course-settings-disc-meeting-link').val(currentCourse.disc_meeting_link);
         $('#course-settings-notes-path-label').text(currentCourse.notes_folder);
 
         $('#confirm-delete-buttons').css('display', 'none');
@@ -448,14 +481,16 @@ $(document).ready(function () {
         var name = $('#course-settings-course-name').val();
         var number = $('#course-settings-course-number').val();
         var meetingLink = $('#course-settings-meeting-link').val();
+        var discMeetingLink = $('#course-settings-disc-meeting-link').val();
         var notesFolder = $('#course-settings-notes-path-label').text();
 
-        if (name !== "" && number !== "" && meetingLink !== "" && notesFolder !== "") {
+        if (name !== "" && number !== "" && notesFolder !== "") {
             dataStore.get('courses.' + currentCourseNumber + '.todos', (todos) => {
                 dataStore.get('courses.' + currentCourseNumber + '.tests', (tests) => {
                     var newCourseData = {
                         name: name,
                         meeting_link: meetingLink,
+                        disc_meeting_link: discMeetingLink,
                         notes_folder: notesFolder,
                         todos: todos,
                         tests: tests
