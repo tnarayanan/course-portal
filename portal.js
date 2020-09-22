@@ -142,7 +142,19 @@ function updateTestList() {
         var i = 0;
         var html = "";
         // console.log(tests);
+
+        let allTests = [];
+
         jQuery.each(tests, (id, test) => {
+            allTests.push({id: id, test: test});
+        });
+
+        allTests.sort((a, b) => (new Date(a.test.date) > new Date(b.test.date) ? 1 : -1));
+
+        allTests.forEach((container) => {
+            const id = container.id;
+            const test = container.test;
+
             console.log(id);
             if (i > 0) html += `<hr class="todo-divider">`;
 
