@@ -50,17 +50,42 @@ function updateTodoList() {
         var i = 0;
         var html = "";
         // console.log(todos);
+        let checkedIds = [];
+        let allTodos = []
+
         jQuery.each(todos, (id, todo) => {
+            allTodos.push({id: id, todo: todo});
+        });
+
+        allTodos.sort((a, b) => (new Date(a.todo.date) > new Date(b.todo.date) ? -1 : 1));
+
+        allTodos.forEach((container) => {
+            const id = container.id;
+            const todo = container.todo;
+
             console.log(id);
             if (i > 0) html = `<hr class="todo-divider">` + html;
 
-            // const date = new Date(todo.date);
+            const date = new Date(todo.date);
+            let dateStr = date.toLocaleString();
+            if (dateStr === "Invalid Date") {
+                dateStr = "";
+            } else {
+                // remove seconds
+                dateStr = dateStr.replace(":00 AM", " AM");
+                dateStr = dateStr.replace(":00 PM", " PM");
+            }
 
+            let checkStr = "";
+            if (todo.checked) {
+                checkStr = "checked";
+                checkedIds.push(id);
+            }
             html = `<div class="todo-item">
-                            <input type="checkbox" class="todo-checkbox" data-id="${id}">
+                            <input type="checkbox" class="todo-checkbox" ${checkStr} data-id="${id}">
                             <div class="todo-text-container">
                                 <p data-id="${id}">${todo.text}</p>
-                                <small data-id="${id}">${todo.date}</small>
+                                <small data-id="${id}">${dateStr}</small>
                             </div>
                             <button type="button" class="close todo-delete" data-id="${id}">
                                 <span aria-hidden="true">&times;</span>
@@ -75,10 +100,17 @@ function updateTodoList() {
 
         $('#todo-list').html(html);
 
+        checkedIds.forEach((id) => {
+            $('p[data-id=' + id + ']').css('text-decoration', 'line-through');
+            $('small[data-id=' + id + ']').css('text-decoration', 'line-through');
+        });
+
         $('.todo-checkbox').bind('click', function () {
             const isChecked = $(this).is(':checked');
             console.log("clicked checkbox, isChecked: " + isChecked);
             const dataId = $(this).attr('data-id');
+
+            dataStore.set('courses.' + currentCourseNumber + '.todos.' + dataId + '.checked', isChecked);
 
             if (isChecked) {
                 $('p[data-id=' + dataId + ']').css('text-decoration', 'line-through');
@@ -533,6 +565,7 @@ $(document).ready(function () {
             const todo = {
                 text: todoText,
                 date: dateText,
+                checked: false,
                 // id: id
             }
 
